@@ -1,0 +1,10 @@
+from django.apps import AppConfig
+
+
+class FutsalConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'backend.futsal'
+    
+    def ready(self):
+        import backend.futsal.signals
+

@@ -1,0 +1,96 @@
+from django.conf import settings
+from django.db import models
+from backend.core.models import BaseModel
+from django.db.models import Q
+
+
+class Futsal(BaseModel):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    city = models.CharField(max_length=100)
+    latitude = models.DecimalField(max_digits=100, decimal_places=6)
+    longitude = models.DecimalField(max_digits=100, decimal_places=6)
+    price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
+    amenities = models.JSONField(default=list)  
+    owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+    image = models.FileField(upload_to="futsal/",blank=True,null=True)
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.name
+    
+
+class FutsalImage(BaseModel):
+    futsal = models.ForeignKey(Futsal, on_delete=models.CASCADE, related_name="futsal_image")
+    image = models.FileField(upload_to="futsal/other/",blank=True,null=True)
+    
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.futsal.name
+
+
+class TimeSlot(BaseModel):
+    STATUS_CHOICES = [
+        ("available", "Available"),
+        ("booked", "Booked"),
+        ("in_queue", "In Queue"),
+    ]
+
+    futsal = models.ForeignKey(Futsal, on_delete=models.CASCADE, related_name="time_slots")
+    day_of_week = models.IntegerField()  # 0-6 (Sunday-Saturday)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="available")
+    booked_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    booking_id = models.IntegerField(null=True, blank=True)  # optional, can be FK to Booking if desired
+
+        
+    def __str__(self):
+        return f"{self.futsal.name} - {self.day_of_week} {self.start_time}-{self.end_time}"
+    
+
+
+
+
+class Booking(BaseModel):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("confirmed", "Confirmed"),
+        ("rejected", "Rejected"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)  
+    customer_name = models.CharField(max_length=255)
+    customer_phone = models.CharField(max_length=20)
+    customer_email = models.EmailField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["time_slot", "date"],
+                condition=Q(status="confirmed"),
+                name="unique_confirmed_booking_per_day"
+            )
+        ]
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["-created_at"]),
+        ]
+    def __str__(self):
+        return f"{self.customer_name} - {self.time_slot.futsal.name} - {self.status}"
+
+
+
+# from django.db import IntegrityError
+
+# try:
+#     booking.save()
+# except IntegrityError:
+#     raise ValidationError("Slot already booked")
