@@ -46,14 +46,14 @@ class TimeSlot(BaseModel):
     end_time = models.TimeField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="available")
     booked_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-    booking_id = models.IntegerField(null=True, blank=True)  # optional, can be FK to Booking if desired
+    booking_id = models.IntegerField(null=True, blank=True) 
+    
+    class Meta:
+         ordering = ["day_of_week", "start_time", "end_time"]
 
         
     def __str__(self):
         return f"{self.futsal.name} - {self.day_of_week} {self.start_time}-{self.end_time}"
-    
-
-
 
 
 class Booking(BaseModel):

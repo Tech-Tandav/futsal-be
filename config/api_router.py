@@ -13,8 +13,8 @@ router.register("users", UserViewSet)
 app_name = "api"
 
 urlpatterns = [
-    path("v1/register/", UserRegisterationView.as_view(), name="register"),
-    path("v1/login/", UserLoginTokenView.as_view(), name="login"),
+    path("api/register/", UserRegisterationView.as_view(), name="register"),
+    path("api/login/", UserLoginTokenView.as_view(), name="login"),
 
 ]
 

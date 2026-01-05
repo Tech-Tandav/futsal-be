@@ -1,7 +1,7 @@
 from datetime import time
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
-from backend.futsal.models import Futsal, TimeSlot
+from backend.futsal.models import Futsal, TimeSlot, Booking
 
 
 @receiver(post_save, sender=Futsal)
@@ -25,3 +25,22 @@ def create_time_slot(sender, instance, created, **kwargs):
                     )
     except Exception as e:
         print(f"Error in {instance}: {str(e)}")
+
+
+
+@receiver(post_save, sender=Booking)
+def create_time_slot(sender, instance, created, **kwargs):
+    if created:
+        instance.time_slot.status = "in_queue"
+        instance.time_slot.save()
+        return
+    if instance.status == "confirmed":
+        instance.time_slot.status = "booked"
+        instance.time_slot.save()
+        Booking.objects.filter(
+            time_slot=instance.time_slot
+        ).exclude(id=instance.id).update(status="rejected")
+        
+            
+    
+        
