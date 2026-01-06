@@ -46,7 +46,7 @@ def create_time_slot(sender, instance, created, **kwargs):
         return
     if instance.status == "confirmed":
         instance.time_slot.status = "booked"
-        instance.time_slot.save(update_fields="status")
+        instance.time_slot.save()
         send_mail(
             subject=f'Booking Detail',
             message=f'Your booking for {instance.time_slot.start_time}-{instance.time_slot.end_time} at {instance.date} is {instance.status}',
