@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from backend.futsal.models import Futsal, TimeSlot, Booking
 
 
-@receiver(post_save, sender=Futsal)
+@receiver(post_save, sender=Futsal, weak=False)
 def create_time_slot(sender, instance, created, **kwargs):
     try:
         if created:
