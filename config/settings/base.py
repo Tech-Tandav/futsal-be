@@ -98,7 +98,7 @@ LOCAL_APPS = [
     "backend.users",
     # Your stuff: custom apps go here
     "backend.futsal.apps.FutsalConfig",
-    'backend.goal'
+    'backend.goal.apps.GoalConfig'
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
