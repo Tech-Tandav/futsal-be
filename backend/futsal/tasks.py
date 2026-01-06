@@ -8,8 +8,8 @@ def time_slot_12am():
     task_name = 'Time Slot '
     if not PeriodicTask.objects.filter(name=task_name).exists():
         schedule, _ = CrontabSchedule.objects.get_or_create(
-            hour=21,  
-            minute=20,
+            hour=0,  
+            minute=0,
             timezone='Asia/Kathmandu'
         )
 

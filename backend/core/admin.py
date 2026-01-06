@@ -8,19 +8,19 @@ from django_celery_beat.models import (PeriodicTask, IntervalSchedule, CrontabSc
 
 
 # Register your models here.
-admin.site.site_header = "IELTS"
-admin.site.index_title = "IELTS"
+admin.site.site_header = "Futsal"
+admin.site.index_title = "Futsal"
 admin.site.site_title = "Simulator"
 
 
 admin.site.unregister(SocialToken)
 admin.site.unregister(SocialAccount)
 admin.site.unregister(SocialApp)
-admin.site.unregister(PeriodicTask)
-admin.site.unregister(IntervalSchedule)
-admin.site.unregister(CrontabSchedule)
-admin.site.unregister(SolarSchedule)
-admin.site.unregister(ClockedSchedule)
+# admin.site.unregister(PeriodicTask)
+# admin.site.unregister(IntervalSchedule)
+# admin.site.unregister(CrontabSchedule)
+# admin.site.unregister(SolarSchedule)
+# admin.site.unregister(ClockedSchedule)
 admin.site.unregister(EmailAddress)
 # admin.site.unregister(Site)
 admin.site.unregister(Authenticator)
