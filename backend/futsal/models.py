@@ -11,7 +11,7 @@ class Futsal(BaseModel):
     latitude = models.DecimalField(max_digits=100, decimal_places=6)
     longitude = models.DecimalField(max_digits=100, decimal_places=6)
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
-    amenities = models.JSONField(default=list)  
+    amenities = models.JSONField(default=list, blank=True,null=True)  
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     image = models.FileField(upload_to="futsal/",blank=True,null=True)
@@ -41,12 +41,10 @@ class TimeSlot(BaseModel):
     ]
 
     futsal = models.ForeignKey(Futsal, on_delete=models.CASCADE, related_name="time_slots")
-    day_of_week = models.IntegerField()  # 0-6 (Sunday-Saturday)
+    day_of_week = models.IntegerField()  
     start_time = models.TimeField()
     end_time = models.TimeField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="available")
-    booked_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-    booking_id = models.IntegerField(null=True, blank=True) 
     
     class Meta:
          ordering = ["day_of_week", "start_time", "end_time"]
@@ -85,12 +83,3 @@ class Booking(BaseModel):
         ]
     def __str__(self):
         return f"{self.customer_name} - {self.time_slot.futsal.name} - {self.status}"
-
-
-
-# from django.db import IntegrityError
-
-# try:
-#     booking.save()
-# except IntegrityError:
-#     raise ValidationError("Slot already booked")

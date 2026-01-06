@@ -346,13 +346,21 @@ SOCIALACCOUNT_FORMS = {"signup": "backend.users.forms.UserSocialSignupForm"}
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "backend.core.pagination.CustomPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "1000/day",    # Authenticated users: 1000 requests per day
+        "anon": "100/day",     # Anonymous users: 100 requests per day
+        "booking": "5/minute",
+    },
 }
+
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
@@ -360,11 +368,11 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # By Default swagger ui is available only to admin user(s). You can change permission classes to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 SPECTACULAR_SETTINGS = {
-    "TITLE": "backend API",
-    "DESCRIPTION": "Documentation of API endpoints of backend",
+    "TITLE": "Futsal Booking API",
+    "DESCRIPTION": "API for managing futsals, time slots, and bookings",
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": True,
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
-    "SCHEMA_PATH_PREFIX": "/api/",
 }
 # Your stuff...
 # ------------------------------------------------------------------------------

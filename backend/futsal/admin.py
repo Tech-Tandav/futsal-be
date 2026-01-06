@@ -99,5 +99,78 @@ class FutsalAdmin(BaseModelAdmin):
 
 
 @admin.register(Booking)
-class BookingAdmin(BaseModelAdmin):
-    pass
+class BookingAdmin(admin.ModelAdmin):
+    # Columns shown in admin list view
+    list_display = (
+        "id",
+        "customer_name",
+        "customer_phone",
+        "customer_email",
+        "time_slot",
+        "date",
+        "status",
+        "created_at",
+    )
+
+    # Filters on right sidebar
+    list_filter = (
+        "status",
+        "date",
+        "created_at",
+    )
+
+    # Search bar fields
+    search_fields = (
+        "customer_name",
+        "customer_phone",
+        "customer_email",
+        "time_slot__futsal__name",
+    )
+
+    # Ordering (uses your Meta ordering as fallback)
+    ordering = ("-created_at",)
+
+    # Use dropdowns for FK fields (faster than raw_id_fields for small data)
+    autocomplete_fields = ( "user", )
+
+    # Fields editable directly in list view
+    list_editable = ("status", "date")
+
+    # Read-only fields
+    readonly_fields = ("created_at", "updated_at")
+
+    # Group fields nicely in detail view
+    fieldsets = (
+        ("Customer Information", {
+            "fields": (
+                "customer_name",
+                "customer_phone",
+                "customer_email",
+                "user",
+            )
+        }),
+        ("Booking Details", {
+            "fields": (
+                "time_slot",
+                "date",
+                "status",
+            )
+        }),
+        ("Timestamps", {
+            "fields": (
+                "created_at",
+                "updated_at",
+            )
+        }),
+    )
+
+    # Admin actions
+    actions = ["mark_confirmed", "mark_rejected"]
+
+    def mark_confirmed(self, request, queryset):
+        queryset.update(status="confirmed")
+    mark_confirmed.short_description = "Mark selected bookings as Confirmed"
+
+    def mark_rejected(self, request, queryset):
+        queryset.update(status="rejected")
+    mark_rejected.short_description = "Mark selected bookings as Rejected"
