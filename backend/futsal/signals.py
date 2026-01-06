@@ -37,7 +37,7 @@ def create_time_slot(sender, instance, created, **kwargs):
         instance.time_slot.status = "in_queue"
         instance.time_slot.save()
         send_mail(
-            subject=f'Bookin Detail',
+            subject=f'Booking Detail',
             message=f'Your booking for {instance.time_slot.start_time}-{instance.time_slot.end_time} at {instance.date} is {instance.status}',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[f'{instance.customer_email}'],
@@ -46,20 +46,21 @@ def create_time_slot(sender, instance, created, **kwargs):
         return
     if instance.status == "confirmed":
         instance.time_slot.status = "booked"
-        instance.time_slot.save()
+        instance.time_slot.save(update_fields="status")
         send_mail(
-            subject=f'Bookin Detail',
+            subject=f'Booking Detail',
             message=f'Your booking for {instance.time_slot.start_time}-{instance.time_slot.end_time} at {instance.date} is {instance.status}',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[f'{instance.customer_email}'],
             fail_silently=False,
         )
-        booking_objs = Booking.objects.filter(
+        booking_qs = Booking.objects.filter(
             time_slot=instance.time_slot
-        ).exclude(id=instance.id).update(status="rejected")
-        for booking_obj in booking_objs:
+        ).exclude(id=instance.id)
+        booking_qs.update(status="rejected")
+        for booking_obj in booking_qs:
             send_mail(
-                subject=f'Bookin Detail',
+                subject=f'Booking Detail',
                 message=f'Your booking for {booking_obj.time_slot.start_time}-{booking_obj.time_slot.end_time} at {booking_obj.date} is {booking_obj.status}',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[f'{booking_obj.customer_email}'],
