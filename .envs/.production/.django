@@ -42,3 +42,15 @@ CELERY_FLOWER_PASSWORD=yciVMZfKnSGxPIe2vAJr2CeqZ2tfwg8q12Mnoq30Smsp69YVZK233YxRE
 # Superuser
 USERNAME=d2
 PASSWORD=dtwo@123
+
+
+
+#DJANGO_SERVER_EMAIL=
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.office365.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=noreply@nicnepal.org 
+EMAIL_HOST_PASSWORD=tfxbvzjqjqhptlzp
+DEFAULT_FROM_EMAIL=noreply@nicnepal.org 
+
