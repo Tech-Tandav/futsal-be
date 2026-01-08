@@ -22,7 +22,7 @@ class TimeSlotInline(admin.TabularInline):
     # show_change_link = True
     fieldsets = (
         (None, {
-            "fields": ("day_of_week", "start_time", "end_time", 'is_archived')
+            "fields": ("day_of_week", "start_time", "end_time", 'status',  'is_archived')
         }),
     )
     

@@ -359,6 +359,11 @@ REST_FRAMEWORK = {
         "anon": "100/day",     # Anonymous users: 100 requests per day
         "booking": "5/minute",
     },
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 

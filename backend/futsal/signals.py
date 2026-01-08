@@ -16,7 +16,6 @@ def create_time_slot(sender, instance, created, **kwargs):
                 "18:00","19:00","20:00","21:00","22:00","23:00"
             ]            
             for day in range(7):
-                print(day)
                 for i in range(len(TIME_SLOTS) - 1):
                     start = time.fromisoformat(TIME_SLOTS[i])
                     end = time.fromisoformat(TIME_SLOTS[i + 1])

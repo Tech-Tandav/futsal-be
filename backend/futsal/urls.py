@@ -3,7 +3,7 @@ from backend.futsal.api.views import FutsalViewSet, BookingViewSet, TimeSlotView
 
 router = DefaultRouter()
 router.register("futsals", FutsalViewSet, basename="futsal")
-router.register("time-slot", TimeSlotViewSet, basename="time-slot")
+router.register("time-slots", TimeSlotViewSet, basename="time-slot")
 router.register("booking", BookingViewSet, basename="booking")
 
 urlpatterns = router.urls

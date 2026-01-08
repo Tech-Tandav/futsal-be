@@ -27,7 +27,8 @@ class FutsalViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "city"]
     ordering_fields = ["price_per_hour", "created_at"]
     ordering = ["-created_at"]
-
+    permission_classes = [AllowAny]
+    
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return FutsalCreateUpdateSerializer
@@ -46,13 +47,15 @@ class TimeSlotViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TimeSlotSerializer
     filterset_class = TimeSlotFilter
     ordering_fields = ["day_of_week", "start_time"]
+    permission_classes = [AllowAny]
+    pagination_class = None
 
 
 class BookingViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Booking.objects
-        .select_related("time_slot", "time_slot__futsal")
-    )
+    # queryset = (
+    #     Booking.objects
+    #     .select_related("time_slot", "time_slot__futsal")
+    # )
     filterset_class = BookingFilter
     search_fields = ["customer_name", "customer_phone", "customer_email"]
     ordering_fields = ["created_at", "date"]
@@ -69,5 +72,12 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "destroy"]:
-            return [permissions.IsAdminUser()]
+            return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+    
+    def get_queryset(self):
+        user_obj = self.request.user
+        if self.request.user.is_staff:
+            return  Booking.objects.filter(time_slot__futsal__owner=user_obj).select_related("time_slot", "time_slot__futsal")
+        return  Booking.objects.filter(user=user_obj).select_related("time_slot", "time_slot__futsal")
+        
