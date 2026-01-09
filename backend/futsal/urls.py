@@ -6,7 +6,7 @@ router.register("futsals", FutsalViewSet, basename="futsal")
 router.register("time-slots", TimeSlotViewSet, basename="time-slot")
 # router.register("booking", BookingViewSet, basename="booking")
 
-urlpatterns = router.urls
+
 
 
 
@@ -14,3 +14,5 @@ urlpatterns = [
     path("bookings/", BookingListCreateAPIView.as_view()),
     path("bookings/<int:pk>/", BookingRetrieveUpdateDestroyAPIView.as_view()),
 ]
+
+urlpatterns += router.urls
