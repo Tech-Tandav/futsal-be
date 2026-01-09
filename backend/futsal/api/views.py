@@ -3,7 +3,7 @@ from backend.futsal.models import Futsal, Booking, TimeSlot
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from django.db.models import Prefetch
 from backend.futsal.api.serializers import (
     FutsalSerializer,
@@ -51,35 +51,53 @@ class TimeSlotViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class BookingViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Booking.objects
-        .select_related("time_slot", "time_slot__futsal")
-    )
+class BookingListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = BookingFilter
     search_fields = ["customer_name", "customer_phone", "customer_email"]
     ordering_fields = ["created_at", "date"]
     ordering = ["-created_at"]
-    throttle_classes = [BookingRateThrottle]  
-    
-    
+    throttle_classes = [BookingRateThrottle]
+
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.request.method == "POST":
             return BookingCreateSerializer
-        if self.action in ["update", "partial_update"]:
-            return BookingStatusUpdateSerializer
         return BookingReadSerializer
 
     def get_permissions(self):
-        if self.action in ["update", "partial_update", "destroy"]:
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
-    
-    # def get_queryset(self):
-    #     user_obj = self.request.user
-    #     if self.request.user.is_staff:
-    #         return  Booking.objects.filter(time_slot__futsal__owner=user_obj).select_related("time_slot", "time_slot__futsal")
-    #     elif not self.request.user.is_staff:
-    #         Booking.objects.filter(user=user_obj).select_related("time_slot", "time_slot__futsal")
-    #     else:  
-    #         Booking.objects.all().select_related("time_slot", "time_slot__futsal")
+        if self.request.method == "POST":
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        qs = Booking.objects.select_related(
+            "time_slot",
+            "time_slot__futsal"
+        )
+
+        if user.is_staff:
+            return qs.filter(time_slot__futsal__owner=user)
+
+        return qs.filter(user=user)
+
+class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return BookingStatusUpdateSerializer
+        return BookingReadSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        qs = Booking.objects.select_related(
+            "time_slot",
+            "time_slot__futsal"
+        )
+
+        if user.is_staff:
+            return qs.filter(time_slot__futsal__owner=user)
+
+        return qs.filter(user=user)

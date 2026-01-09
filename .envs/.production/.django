@@ -54,3 +54,4 @@ EMAIL_HOST_USER=noreply@nicnepal.org
 EMAIL_HOST_PASSWORD=tfxbvzjqjqhptlzp
 DEFAULT_FROM_EMAIL=noreply@nicnepal.org 
 
+FE_URL=https://app.book.nicnepal.org/

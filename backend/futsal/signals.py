@@ -33,7 +33,7 @@ def create_time_slot(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Booking, weak=False)
 def booking_email(sender, instance, created, **kwargs):
     try:
-        link = f"https://app.book.nicnepal.org/new-booking/{instance.id}"
+        link = f"{settings.FE_URL}new-booking/{instance.id}"
         send_mail(
             subject=f'Booking for {instance.time_slot.futsal.name}',
             message=f'''Your booking from {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}

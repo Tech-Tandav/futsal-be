@@ -383,3 +383,4 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=["http://localhost:8000"])
+FE_URL=env("FE_URL", default="")
