@@ -82,6 +82,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         return qs.filter(user=user)
 
 class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset =  Booking.objects.all()
     permission_classes = [permissions.AllowAny()]
 
     def get_serializer_class(self):
