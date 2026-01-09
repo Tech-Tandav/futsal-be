@@ -52,10 +52,10 @@ class TimeSlotViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BookingViewSet(viewsets.ModelViewSet):
-    # queryset = (
-    #     Booking.objects
-    #     .select_related("time_slot", "time_slot__futsal")
-    # )
+    queryset = (
+        Booking.objects
+        .select_related("time_slot", "time_slot__futsal")
+    )
     filterset_class = BookingFilter
     search_fields = ["customer_name", "customer_phone", "customer_email"]
     ordering_fields = ["created_at", "date"]
@@ -75,9 +75,11 @@ class BookingViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
     
-    def get_queryset(self):
-        user_obj = self.request.user
-        if self.request.user.is_staff:
-            return  Booking.objects.filter(time_slot__futsal__owner=user_obj).select_related("time_slot", "time_slot__futsal")
-        return  Booking.objects.filter(user=user_obj).select_related("time_slot", "time_slot__futsal")
-        
+    # def get_queryset(self):
+    #     user_obj = self.request.user
+    #     if self.request.user.is_staff:
+    #         return  Booking.objects.filter(time_slot__futsal__owner=user_obj).select_related("time_slot", "time_slot__futsal")
+    #     elif not self.request.user.is_staff:
+    #         Booking.objects.filter(user=user_obj).select_related("time_slot", "time_slot__futsal")
+    #     else:  
+    #         Booking.objects.all().select_related("time_slot", "time_slot__futsal")

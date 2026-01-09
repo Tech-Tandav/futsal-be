@@ -27,3 +27,20 @@ def create_time_slot(sender, instance, created, **kwargs):
                     )
     except Exception as e:
         print(f"Error in {instance}: {str(e)}")
+
+
+
+@receiver(post_save, sender=Booking, weak=False)
+def booking_email(sender, instance, created, **kwargs):
+    try:
+        
+        send_mail(
+            subject=f'Booking for {instance.time_slot.futsal.name}',
+            message=f'Your booking from {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[instance.customer_email],
+            fail_silently=False,
+        )
+        
+    except Exception as e:
+        print(str(e))

@@ -97,6 +97,7 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = [
+            "id",
             "time_slot",
             "date",
             "customer_name",
@@ -107,7 +108,6 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         time_slot = attrs["time_slot"]
         date = attrs.get("date")
-        print(date)
         if not date:
             raise serializers.ValidationError({"date": "Booking date is required."})
 
