@@ -65,8 +65,8 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+            return [permissions.AllowAny]
+        return [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -83,7 +83,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
 
 class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset =  Booking.objects.all()
-    permission_classes = [permissions.AllowAny()]
+    permission_classes = [permissions.AllowAny]
 
     def get_serializer_class(self):
         if self.request.method in ["PUT", "PATCH"]:
