@@ -12,7 +12,7 @@ router.register("time-slots", TimeSlotViewSet, basename="time-slot")
 
 urlpatterns = [
     path("bookings/", BookingListCreateAPIView.as_view()),
-    path("bookings/<int:pk>/", BookingRetrieveUpdateDestroyAPIView.as_view()),
+    path("bookings/<uuid:pk>/", BookingRetrieveUpdateDestroyAPIView.as_view()),
 ]
 
 urlpatterns += router.urls
