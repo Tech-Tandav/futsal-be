@@ -32,7 +32,7 @@ def create_time_slot(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Booking, weak=False)
 def booking_email(sender, instance, created, **kwargs):
-    try:
+    # try:
         link = f"{settings.FE_URL}new-booking/{instance.id}"
         send_mail(
             subject=f'Booking for {instance.time_slot.futsal.name}',
@@ -44,5 +44,5 @@ def booking_email(sender, instance, created, **kwargs):
             fail_silently=False,
         )
         
-    except Exception as e:
-        print(str(e))
+    # except Exception as e:
+    #     print(str(e))
