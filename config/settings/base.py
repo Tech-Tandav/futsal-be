@@ -243,7 +243,7 @@ EMAIL_PORT = env("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=True)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-EMAIL_TIMEOUT = 60
+EMAIL_TIMEOUT = 100
 
 # ADMIN
 # ------------------------------------------------------------------------------
