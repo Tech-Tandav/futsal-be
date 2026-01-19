@@ -13,7 +13,7 @@ class FutsalImageSerializer(serializers.ModelSerializer):
 
 class FutsalSerializer(serializers.ModelSerializer):
     images = FutsalImageSerializer(source="futsal_image", many=True, read_only=True)
-
+    # distance = serializers.SerializerMethodField()
     class Meta:
         model = Futsal
         fields = [
@@ -28,9 +28,12 @@ class FutsalSerializer(serializers.ModelSerializer):
             "is_active",
             "image",
             "images",
+            # "distance",
             "created_at",
         ]
-
+    # def get_distance(self,obj):
+    #     print(self.context.get("request").query_params)
+    #     return 1
 
 class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,6 +59,7 @@ class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
 class TimeSlotSerializer(serializers.ModelSerializer):
     futsal_name = serializers.CharField(source="futsal.name", read_only=True)
     day_name = serializers.CharField(source="get_day_of_week_display", read_only=True)
+    booking = serializers.SerializerMethodField()
     class Meta:
         model = TimeSlot
         fields = [
@@ -66,8 +70,14 @@ class TimeSlotSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "status",
-            "day_name"
+            "day_name",
+            "booking"
         ]
+        
+    def get_booking(self, obj):
+        if self.context["request"].user.is_staff:
+            return obj.booking_set.values("id", "customer_name", "customer_phone", "status" ,"date").order_by("date")
+        return []
 
 
 

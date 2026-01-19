@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from backend.futsal.models import Futsal, Booking, TimeSlot
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import APIException
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets, permissions, generics
@@ -49,6 +50,7 @@ class TimeSlotViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ["day_of_week", "start_time"]
     permission_classes = [AllowAny]
     pagination_class = None
+   
 
 
 class BookingListCreateAPIView(generics.ListCreateAPIView):
