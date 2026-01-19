@@ -50,8 +50,8 @@ EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
-EMAIL_HOST_USER=binayaparajuli17@gmail.com
-EMAIL_HOST_PASSWORD=tvwc axlu tnem lvce
-DEFAULT_FROM_EMAIL=binayaparajuli17@gmail.com
+EMAIL_HOST_USER=churchillinstituteofhighereduc@gmail.com
+EMAIL_HOST_PASSWORD=gpny bwuf fhid xtbi
+DEFAULT_FROM_EMAIL=churchillinstituteofhighereduc@gmail.com
 
 FE_URL=https://app.book.nicnepal.org/
