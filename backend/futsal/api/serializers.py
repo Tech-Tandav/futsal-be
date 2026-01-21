@@ -75,8 +75,11 @@ class TimeSlotSerializer(serializers.ModelSerializer):
         ]
         
     def get_booking(self, obj):
+        today = timezone.now().date()
+        print(today)
         if self.context["request"].user.is_staff:
-            return obj.booking_set.values("id", "customer_name", "customer_phone", "status" ,"date").order_by("date")
+            
+            return obj.booking_set.filter(date__gte=today).exclude(status="rejected").values("id", "customer_name", "customer_phone", "status", "date" ,"created_at").order_by("created_at")
         return []
 
 

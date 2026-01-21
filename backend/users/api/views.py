@@ -55,6 +55,7 @@ class UserLoginTokenView(ObtainAuthToken):
             'token': token.key,
             'user_id': user.pk,
             'username': user.username,
-            'email':user.email if user.email else None 
+            'email': user.email if user.email else None ,
+            'is_staff': user.is_staff
         }, status=status.HTTP_200_OK)
 
