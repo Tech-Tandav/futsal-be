@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.utils import timezone
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
-    
+
     
 class FutsalImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,11 +75,10 @@ class TimeSlotSerializer(serializers.ModelSerializer):
         ]
         
     def get_booking(self, obj):
-        today = timezone.now().date()
-        print(today)
+        today = timezone.now()
         if self.context["request"].user.is_staff:
             
-            return obj.booking_set.filter(date__gte=today).exclude(status="rejected").values("id", "customer_name", "customer_phone", "status", "date" ,"created_at").order_by("created_at")
+            return obj.booking_set.filter(date__gte=today).values("id", "customer_name", "customer_phone", "status", "date" ,"created_at").order_by("created_at")
         return []
 
 

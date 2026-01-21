@@ -85,7 +85,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
 
 class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset =  Booking.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.method in ["PUT", "PATCH"]:
