@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db import transaction
 from django.utils import timezone
+from django.db.models import Q
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
 
     
@@ -184,11 +185,14 @@ class BookingStatusUpdateSerializer(serializers.ModelSerializer):
             ).exclude(id=instance.id).update(status="rejected")
 
         elif status == "rejected":
+            # print(Booking.objects.filter(
+            #     time_slot=time_slot,
+            #     date=instance.date,
+            # ).exclude(Q(id=instance.id) | Q(status="rejected")).values("id", "status"))
             if not Booking.objects.filter(
                 time_slot=time_slot,
                 date=instance.date,
-                status="confirmed",
-            ).exists():
+                ).exclude(Q(id=instance.id) | Q(status="rejected")).exists():
                 time_slot.status = "available"
 
         time_slot.save(update_fields=["status"])
