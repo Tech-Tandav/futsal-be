@@ -79,7 +79,7 @@ class TimeSlotSerializer(serializers.ModelSerializer):
         today = timezone.now().date()
         user_obj = self.context["request"].user
         if  user_obj.is_staff:
-            return obj.booking_set.filter(date__gte=today, user=user_obj).values("id", "customer_name", "customer_phone", "status", "date" ,"created_at").order_by("created_at")
+            return obj.booking_set.filter(date__gte=today, time_slot__futsal__owner=user_obj).values("id", "customer_name", "customer_phone", "status", "date" ,"created_at").order_by("created_at")
         return []
 
 
