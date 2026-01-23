@@ -91,16 +91,3 @@ class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         if self.request.method in ["PUT", "PATCH"]:
             return BookingStatusUpdateSerializer
         return BookingReadSerializer
-
-    # def get_queryset(self):
-    #     user = self.request.user
-
-    #     qs = Booking.objects.select_related(
-    #         "time_slot",
-    #         "time_slot__futsal"
-    #     )
-
-    #     if user.is_staff:
-    #         return qs.filter(time_slot__futsal__owner=user)
-
-    #     return qs.filter(user=user)
