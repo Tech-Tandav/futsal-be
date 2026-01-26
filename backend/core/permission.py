@@ -1,8 +1,8 @@
 from django.utils.crypto import get_random_string
 from rest_framework import permissions
 from university_attendance_management.users.models import User
-from university_attendance_management.core.utils import MicrosoftAuth
- 
+from backend.core.utils import MicrosoftAuth
+
  
 class DjangoUser:
     def __init__(self, username):

@@ -1,8 +1,9 @@
 from celery import shared_task
+from django.utils import timezone
+from django.conf import settings
+from django.core.mail import send_mail
 from django_celery_beat.models import PeriodicTask, CrontabSchedule
 from backend.futsal.models import Futsal, TimeSlot, Booking
-from django.utils import timezone
-
 
 def time_slot_12am():
     task_name = 'Time Slot '
@@ -36,3 +37,15 @@ def time_slot():
     
     # cron_ended("mark_students_absent")
 
+
+@shared_task
+def send_booking_mail(instance_id):
+    instance = Booking.objects.get(id=instance_id)
+    link = f"{settings.FE_URL}new-booking/{instance.id}"
+    send_mail(
+        subject=f'Booking for {instance.time_slot.futsal.name}',
+        message=f'''Your booking from {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}''',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[instance.customer_email],
+        fail_silently=False,
+    )

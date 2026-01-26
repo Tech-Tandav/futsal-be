@@ -53,22 +53,14 @@ class TimeSlotViewSet(viewsets.ReadOnlyModelViewSet):
    
 
 
-class BookingListCreateAPIView(generics.ListCreateAPIView):
+class BookingListAPIView(generics.ListCreateAPIView):
     filterset_class = BookingFilter
     search_fields = ["customer_name", "customer_phone", "customer_email"]
     ordering_fields = ["created_at", "date"]
     ordering = ["-created_at"]
-    throttle_classes = [BookingRateThrottle]
-
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return BookingCreateSerializer
-        return BookingReadSerializer
-
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+    serializer_class = BookingReadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
 
     def get_queryset(self):
         user = self.request.user
@@ -82,6 +74,13 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
             return qs.filter(time_slot__futsal__owner=user)
 
         return qs.filter(user=user)
+    
+
+class BookingCreateAPIView(generics.ListCreateAPIView):
+    throttle_classes = [BookingRateThrottle]
+    serializer_class = BookingCreateSerializer
+    permission_classes = [permissions.AllowAny]
+
 
 class BookingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset =  Booking.objects.all()

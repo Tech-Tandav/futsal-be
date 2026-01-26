@@ -36,3 +36,12 @@ class CustomPagination(PageNumberPagination):
     # page_query_param = 'p' #default page lai change garcha
     page_size_query_param = 'records'  # client can decide the page size
     max_page_size = 15  # To limit the page size
+    
+    def get_paginated_response(self, data):
+        return Response({
+            "count":self.page.paginator.count,
+            "page_size":self.page_size,
+            "total_pages": self.page.paginator.num_pages,
+            "current_page": self.page.number,
+            "results": data,
+        })

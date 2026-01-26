@@ -94,7 +94,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-    # "drf_standardized_errors",
+    "drf_standardized_errors",
 ]
 
 LOCAL_APPS = [
@@ -351,7 +351,7 @@ SOCIALACCOUNT_FORMS = {"signup": "backend.users.forms.UserSocialSignupForm"}
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "backend.core.pagination.CustomPagination",
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 1,
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
