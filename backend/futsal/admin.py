@@ -63,6 +63,7 @@ class FutsalAdmin(BaseModelAdmin):
             "fields": (
                 "latitude",
                 "longitude",
+                "map_source"
             )
         }),
         ("Facilities", {

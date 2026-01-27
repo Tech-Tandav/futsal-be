@@ -15,6 +15,7 @@ class Futsal(BaseModel):
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     image = models.FileField(upload_to="futsal/",blank=True,null=True)
+    map_source = models.TextField(blank=True,null=True)
     class Meta:
         ordering = ["-created_at"]
 

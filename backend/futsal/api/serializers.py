@@ -31,6 +31,7 @@ class FutsalSerializer(serializers.ModelSerializer):
             "images",
             # "distance",
             "created_at",
+            "map_source"
         ]
     # def get_distance(self,obj):
     #     print(self.context.get("request").query_params)
