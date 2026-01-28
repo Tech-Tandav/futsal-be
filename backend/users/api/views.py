@@ -34,28 +34,18 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
 class UserRegisterationView(CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
-    
-    def post(self,request, *args, **kwargs):
-        serializer = self.serializer_class(data =request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({"message":"Registration successfull!"},status=status.HTTP_201_CREATED)
-        return Response({"message":"Registration Failed!"},status=status.HTTP_400_BAD_REQUEST)
- 
+        
         
 class UserLoginTokenView(ObtainAuthToken):
     permission_classes = [AllowAny]
     
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'username': user.username,
-            'email': user.email if user.email else None ,
-            'is_staff': user.is_staff
-        }, status=status.HTTP_200_OK)
-
+        response = super().post(request, *args, **kwargs)
+        user = Token.objects.get(key=response.data["token"]).user
+        response.data["user"] = {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "is_staff": user.is_staff,
+        }
+        return response
