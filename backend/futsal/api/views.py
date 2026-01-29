@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets, permissions, generics
 from django.db.models import Prefetch
+from django.db.models import Q
 from backend.futsal.api.serializers import (
     FutsalSerializer,
     FutsalCreateUpdateSerializer,
@@ -29,6 +30,12 @@ class FutsalViewSet(viewsets.ModelViewSet):
     ordering_fields = ["price_per_hour", "created_at"]
     ordering = ["-created_at"]
     permission_classes = [AllowAny]
+    
+    def get_queryset(self):
+        if user:=self.request.user.is_staff:
+            return Futsal.objects.filter(owner=user).prefetch_related("futsal_image")
+        return super().get_queryset()
+    
     
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
