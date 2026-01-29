@@ -27,8 +27,9 @@ class FutsalViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     
     def get_queryset(self):
-        if user:=self.request.user.is_staff:
-            return Futsal.objects.filter(is_active=True, owner=user).prefetch_related("futsal_image")
+        user_obj = self.request.user
+        if user_obj.is_staff:
+            return Futsal.objects.filter(is_active=True, owner=user_obj).prefetch_related("futsal_image")
         return Futsal.objects.filter(is_active=True).prefetch_related("futsal_image")
     
     
