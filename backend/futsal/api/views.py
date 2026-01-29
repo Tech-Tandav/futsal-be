@@ -20,11 +20,6 @@ from backend.futsal.throttles import BookingRateThrottle
 
 
 class FutsalViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Futsal.objects
-        .filter(is_active=True)
-        .prefetch_related("futsal_image")
-    )
     filterset_class = FutsalFilter
     search_fields = ["name", "city"]
     ordering_fields = ["price_per_hour", "created_at"]
@@ -33,8 +28,8 @@ class FutsalViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         if user:=self.request.user.is_staff:
-            return Futsal.objects.filter(owner=user).prefetch_related("futsal_image")
-        return super().get_queryset()
+            return Futsal.objects.filter(is_active=True, owner=user).prefetch_related("futsal_image")
+        return Futsal.objects.filter(is_active=True).prefetch_related("futsal_image")
     
     
     def get_serializer_class(self):
