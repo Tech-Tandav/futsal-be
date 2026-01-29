@@ -22,6 +22,7 @@ class FutsalSerializer(serializers.ModelSerializer):
             "name",
             "address",
             "city",
+            "phone",
             "latitude",
             "longitude",
             "price_per_hour",
@@ -49,6 +50,7 @@ class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
             "price_per_hour",
             "amenities",
             "image",
+            "phone",
             "is_active",
         ]
 

@@ -8,6 +8,7 @@ class Futsal(BaseModel):
     name = models.CharField(max_length=255)
     address = models.TextField()
     city = models.CharField(max_length=100)
+    phone = models.CharField(max_length=50)
     latitude = models.FloatField()
     longitude = models.FloatField()
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)

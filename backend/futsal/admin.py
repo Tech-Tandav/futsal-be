@@ -33,6 +33,7 @@ class FutsalAdmin(BaseModelAdmin):
         "name",
         "price_per_hour",
         "owner",
+        "phone",
         "image_preview",
         "created_at",
         "is_active",
@@ -55,6 +56,7 @@ class FutsalAdmin(BaseModelAdmin):
                 "name",
                 "city",
                 "address",
+                "phone",
                 "price_per_hour",
                 "owner",
             )
