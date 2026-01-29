@@ -110,6 +110,8 @@ class BookingAdmin(admin.ModelAdmin):
         "time_slot",
         "date",
         "status",
+        "request_mail_status",
+       "decision_mail_status",
         "created_at",
     )
 
@@ -118,6 +120,8 @@ class BookingAdmin(admin.ModelAdmin):
         "status",
         "date",
         "created_at",
+        "request_mail_status",
+        "decision_mail_status",
     )
 
     # Search bar fields
@@ -138,7 +142,7 @@ class BookingAdmin(admin.ModelAdmin):
     list_editable = ("status", "date")
 
     # Read-only fields
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "request_mail_status", "decision_mail_status")
 
     # Group fields nicely in detail view
     fieldsets = (
@@ -155,6 +159,8 @@ class BookingAdmin(admin.ModelAdmin):
                 "time_slot",
                 "date",
                 "status",
+                "request_mail_status", "decision_mail_status"
+                
             )
         }),
         ("Timestamps", {

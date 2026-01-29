@@ -69,6 +69,8 @@ class Booking(BaseModel):
     customer_phone = models.CharField(max_length=20)
     customer_email = models.EmailField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    request_mail_status = models.BooleanField(default=False)
+    decision_mail_status = models.BooleanField(default=False)
     
     class Meta:
         constraints = [
