@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives, send_mail
 from django.template.loader import get_template
-from university_attendance_management.core.utils import get_current_time
+# from university_attendance_management.core.utils import get_current_time
 
 class BaseEmailMessage:
     template_name = None
@@ -43,16 +43,16 @@ class BaseEmailMessage:
         return get_template(self.template_name).render(self._context)
 
 
-def cron_started(task,today_date="",today_day=""):
-    current_time = get_current_time()
-    if settings.SEND_EMAIL:
-        send_mail(
-            subject=f'Cron Job Started for {task}',
-            message=f'Your scheduled cron job has started running.{today_date}-{today_day} at {current_time}',
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['binay@ittogether.com.au'],
-            fail_silently=False,
-        )
+# def cron_started(task,today_date="",today_day=""):
+#     current_time = get_current_time()
+#     if settings.SEND_EMAIL:
+#         send_mail(
+#             subject=f'Cron Job Started for {task}',
+#             message=f'Your scheduled cron job has started running.{today_date}-{today_day} at {current_time}',
+#             from_email=settings.DEFAULT_FROM_EMAIL,
+#             recipient_list=['binay@ittogether.com.au'],
+#             fail_silently=False,
+#         )
 
 def cron_ended(task):
     if settings.SEND_EMAIL:

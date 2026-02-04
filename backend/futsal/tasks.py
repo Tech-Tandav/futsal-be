@@ -1,9 +1,10 @@
 from celery import shared_task
 from django.utils import timezone
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django_celery_beat.models import PeriodicTask, CrontabSchedule
 from backend.futsal.models import Futsal, TimeSlot, Booking
+from backend.futsal.emails import BookingNotificationForOnwerEmail
 
 
 def time_slot_12am():
@@ -36,17 +37,21 @@ def time_slot():
 @shared_task
 def send_booking_mail(instance_id):
     instance = Booking.objects.get(id=instance_id)
-    owner_email = instance.time_slot.futsal.owner.email
-    link = f"{settings.FE_URL}new-booking/{instance.id}"
+    time_slot_obj = instance.time_slot
+    futsal_obj = time_slot_obj.futsal
     send_mail(
-        subject=f'Booking for {instance.time_slot.futsal.name}',
-        message=f'''Booking for {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}''',
+        subject=f'Booking for {futsal_obj.name}',
+        message=f'''Booking for {time_slot_obj.start_time}-{time_slot_obj.end_time} is {instance.status}''',
         from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[instance.customer_email, owner_email],
+        recipient_list=[instance.customer_email],
         fail_silently=False,
     )
+    
+    link = f"{settings.FE_URL}owner/?futsal_id={futsal_obj.id}&timeSlot_id={time_slot_obj.id}&date={instance.date}"
+    email = BookingNotificationForOnwerEmail({"link":link}, f"Booking for {time_slot_obj.start_time}-{time_slot_obj.end_time} is {instance.status}")
+    email.send(to=[futsal_obj.owner.email])
+    
     if instance.status == "pending":
         Booking.objects.filter(id=instance.id).update(request_mail_status=True)
     elif instance.status == "confirmed" or instance.status == "rejected":
         Booking.objects.filter(id=instance.id).update(decision_mail_status=True)
-    
