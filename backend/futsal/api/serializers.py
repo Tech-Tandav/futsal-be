@@ -3,7 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.db.models import Q
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
-
+from backend.core.utils import get_day_key
     
 class FutsalImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +15,7 @@ class FutsalImageSerializer(serializers.ModelSerializer):
 class FutsalSerializer(serializers.ModelSerializer):
     images = FutsalImageSerializer(source="futsal_image", many=True, read_only=True)
     # distance = serializers.SerializerMethodField()
+    price_per_hour = serializers.SerializerMethodField()
     class Meta:
         model = Futsal
         fields = [
@@ -25,7 +26,6 @@ class FutsalSerializer(serializers.ModelSerializer):
             "phone",
             "latitude",
             "longitude",
-            "price_per_hour",
             "amenities",
             "is_active",
             "image",
@@ -37,6 +37,21 @@ class FutsalSerializer(serializers.ModelSerializer):
     # def get_distance(self,obj):
     #     print(self.context.get("request").query_params)
     #     return 1
+    def get_price_per_hour(self,obj):
+        now = timezone.now()
+        day_key = get_day_key(now)
+        return obj.prices.filter(
+            day=day_key,
+            start_time__lte=now.time(),
+            end_time__gt=now.time()
+        ).first()
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        for field in ["map_source"]:
+            if representation.get(field) == "":
+                representation[field] = None
+        return representation
 
 class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,7 +62,6 @@ class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
             "city",
             "latitude",
             "longitude",
-            "price_per_hour",
             "amenities",
             "image",
             "phone",

@@ -40,7 +40,7 @@ def send_booking_mail(instance_id):
     link = f"{settings.FE_URL}new-booking/{instance.id}"
     send_mail(
         subject=f'Booking for {instance.time_slot.futsal.name}',
-        message=f'''Your booking from {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}''',
+        message=f'''Booking for {instance.time_slot.start_time}-{instance.time_slot.end_time} is {instance.status}''',
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[instance.customer_email, owner_email],
         fail_silently=False,

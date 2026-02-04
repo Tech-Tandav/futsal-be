@@ -277,3 +277,10 @@ def haversine(lat1, lon1, lat2, lon2):
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return round(R * c, 2)
+
+
+
+def get_day_key(now):
+    if now.weekday() == 5:
+        return 'sat'
+    return 'weekday'

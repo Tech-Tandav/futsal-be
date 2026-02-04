@@ -11,7 +11,7 @@ class Futsal(BaseModel):
     phone = models.CharField(max_length=50)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
+    # price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
     amenities = models.JSONField(default=list, blank=True,null=True)  
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
@@ -22,7 +22,47 @@ class Futsal(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class FutsalPrice(BaseModel):
+    DAY_CHOICES = [
+        ('weekday', 'Weekdays (Sun–Fri)'),
+        ('sat', 'Saturday'),
+    ]
+
+    futsal = models.ForeignKey(
+        Futsal,
+        on_delete=models.CASCADE,
+        related_name='prices'
+    )
+
+    day = models.CharField(max_length=10, choices=DAY_CHOICES)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
     
+    def __str__(self):
+        return f"{self.futsal.name}=>{self.day}:{self.start_time}-{self.end_time}={self.price_per_hour}"
+
+
+class FutsalPricingConfig(BaseModel):
+    futsal = models.OneToOneField(
+        Futsal,
+        on_delete=models.CASCADE,
+        related_name="pricing_config"
+    )
+
+    weekday_open = models.TimeField()
+    weekday_close = models.TimeField()
+
+    off_start = models.TimeField()
+    off_end = models.TimeField()
+
+    peak_price = models.DecimalField(max_digits=8, decimal_places=2)
+    off_price = models.DecimalField(max_digits=8, decimal_places=2)
+    saturday_price = models.DecimalField(max_digits=8, decimal_places=2)
+
+
 
 class FutsalImage(BaseModel):
     futsal = models.ForeignKey(Futsal, on_delete=models.CASCADE, related_name="futsal_image")

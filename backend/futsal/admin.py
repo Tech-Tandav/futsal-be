@@ -1,7 +1,7 @@
 # Register your models here.
 from django.contrib import admin
 from django.utils.html import format_html
-from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
+from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking, FutsalPrice, FutsalPricingConfig
 from backend.core.admin import BaseModelAdmin
 
 
@@ -25,13 +25,21 @@ class TimeSlotInline(admin.TabularInline):
             "fields": ("day_of_week", "start_time", "end_time", 'status',  'is_archived')
         }),
     )
-    
+   
+class FutsalPriceInline(admin.StackedInline):
+    model = FutsalPrice
+    extra = 0
+    # show_change_link = True
+    fieldsets = (
+        (None, {
+            "fields": ("day", "start_time", "end_time", "price_per_hour")
+        }),
+    ) 
     
 @admin.register(Futsal)
 class FutsalAdmin(BaseModelAdmin):
     list_display = (
         "name",
-        "price_per_hour",
         "owner",
         "phone",
         "image_preview",
@@ -57,7 +65,6 @@ class FutsalAdmin(BaseModelAdmin):
                 "city",
                 "address",
                 "phone",
-                "price_per_hour",
                 "owner",
             )
         }),
@@ -88,7 +95,7 @@ class FutsalAdmin(BaseModelAdmin):
             )
         }),
     )
-    inlines = [FutsalImageInline, TimeSlotInline]
+    inlines = [FutsalImageInline, FutsalPriceInline, TimeSlotInline]
 
     def image_preview(self, obj):
         if obj.image:
