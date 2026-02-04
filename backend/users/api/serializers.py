@@ -6,7 +6,7 @@ from backend.users.models import User
 class UserSerializer(serializers.ModelSerializer[User]):
     class Meta:
         model = User
-        fields = ["username", "password", "email", "is_staff", "name"]
+        fields = ["username", "password", "email", "is_staff", "name", "phone"]
         extra_kwargs = {
             # "url": {"view_name": "api:user-detail", "lookup_field": "username"},
             # 'id': {'read_only': True},
