@@ -35,7 +35,7 @@ def time_slot():
 
 
 @shared_task
-def send_booking_mail(instance_id):
+def send_booking_mail_to_customer(instance_id):
     instance = Booking.objects.get(id=instance_id)
     time_slot_obj = instance.time_slot
     futsal_obj = time_slot_obj.futsal
@@ -46,12 +46,19 @@ def send_booking_mail(instance_id):
         recipient_list=[instance.customer_email],
         fail_silently=False,
     )
-    
-    link = f"{settings.FE_URL}owner/?futsal_id={futsal_obj.id}&timeSlot_id={time_slot_obj.id}&date={instance.date}"
-    email = BookingNotificationForOnwerEmail({"link":link}, f"Booking for {time_slot_obj.start_time}-{time_slot_obj.end_time} is {instance.status}")
-    email.send(to=[futsal_obj.owner.email])
-    
     if instance.status == "pending":
         Booking.objects.filter(id=instance.id).update(request_mail_status=True)
     elif instance.status == "confirmed" or instance.status == "rejected":
         Booking.objects.filter(id=instance.id).update(decision_mail_status=True)
+    
+    
+@shared_task
+def send_booking_mail_to_owner(instance_id):
+    instance = Booking.objects.get(id=instance_id)
+    time_slot_obj = instance.time_slot
+    futsal_obj = time_slot_obj.futsal
+    link = f"{settings.FE_URL}owner/?futsal_id={futsal_obj.id}&timeSlot_id={time_slot_obj.id}&date={instance.date}"
+    email = BookingNotificationForOnwerEmail({"link":link}, f"Booking for {time_slot_obj.start_time}-{time_slot_obj.end_time} is {instance.status}")
+    email.send(to=[futsal_obj.owner.email])
+    
+    

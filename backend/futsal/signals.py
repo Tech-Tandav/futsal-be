@@ -2,9 +2,7 @@ from datetime import time
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from backend.futsal.models import Futsal, TimeSlot, Booking
-from django.conf import settings
-from django.core.mail import send_mail
-from  backend.futsal.tasks import send_booking_mail
+from backend.futsal.tasks import send_booking_mail_to_customer, send_booking_mail_to_owner
 
 
 @receiver(post_save, sender=Futsal, weak=False)
@@ -33,4 +31,7 @@ def create_time_slot(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Booking, weak=False)
 def booking_email(sender, instance, created, **kwargs):
-    send_booking_mail.delay(instance.id)
+    if created:
+        send_booking_mail_to_owner.delay(instance.id)
+    send_booking_mail_to_customer.delay(instance.id)
+    

@@ -7,8 +7,8 @@ class BaseEmailMessage:
     template_name = None
 
     def __init__(self, context: dict, subject: str):
-        self._subject = subject
         self._context = context
+        self._subject = subject
 
     def send_mail(self, to: list, body: str):
         # Send a test email with plain text content
