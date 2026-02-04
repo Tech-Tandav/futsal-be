@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.db import transaction
 from django.utils import timezone
 from django.db.models import Q
+from django.forms.models import model_to_dict
+
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
 from backend.core.utils import get_day_key
     
@@ -30,21 +32,23 @@ class FutsalSerializer(serializers.ModelSerializer):
             "is_active",
             "image",
             "images",
-            # "distance",
             "created_at",
-            "map_source"
+            "map_source",
+            "price_per_hour",
+            # "distance"
         ]
     # def get_distance(self,obj):
     #     print(self.context.get("request").query_params)
     #     return 1
     def get_price_per_hour(self,obj):
-        now = timezone.now()
+        now = timezone.localtime()
         day_key = get_day_key(now)
-        return obj.prices.filter(
+        priceing_obj = obj.prices.filter(
             day=day_key,
             start_time__lte=now.time(),
             end_time__gt=now.time()
         ).first()
+        return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
