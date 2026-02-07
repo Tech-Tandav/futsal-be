@@ -32,7 +32,13 @@ class FutsalViewSet(viewsets.ModelViewSet):
             return Futsal.objects.filter(is_active=True, owner=user_obj).prefetch_related("futsal_image")
         return Futsal.objects.filter(is_active=True).prefetch_related("futsal_image")
     
-    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        query_params = self.request.query_params
+        context["date"] = query_params.get("date", None)
+        context["time_slot"] = query_params.get("time_slot", None)
+        return context
+
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return FutsalCreateUpdateSerializer

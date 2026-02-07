@@ -47,5 +47,6 @@ class UserLoginTokenView(ObtainAuthToken):
             "email": user.email,
             "username": user.username,
             "is_staff": user.is_staff,
+            "phone": user.phone
         }
         return response

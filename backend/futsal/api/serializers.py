@@ -1,11 +1,12 @@
+from datetime import datetime
 from rest_framework import serializers
 from django.db import transaction
 from django.utils import timezone
 from django.db.models import Q
 from django.forms.models import model_to_dict
-
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
 from backend.core.utils import get_day_key
+    
     
 class FutsalImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,13 +42,25 @@ class FutsalSerializer(serializers.ModelSerializer):
     #     print(self.context.get("request").query_params)
     #     return 1
     def get_price_per_hour(self,obj):
-        now = timezone.localtime()
-        day_key = get_day_key(now)
-        priceing_obj = obj.prices.filter(
-            day=day_key,
-            start_time__lte=now.time(),
-            end_time__gt=now.time()
-        ).first()
+        date_str = self.context.get("date")
+        time_slot = self.context.get("time_slot")
+        if date_str:
+            dt = datetime.strptime(date_str, "%Y-%m-%d")
+            time_slot_obj = TimeSlot.objects.get(id=time_slot)
+            day_key = get_day_key(dt)
+            priceing_obj = obj.prices.filter(
+                day=day_key,
+                start_time__lte=time_slot_obj.start_time,
+                end_time__gt=time_slot_obj.end_time
+            ).first()
+        else:
+            now = timezone.localtime()
+            day_key = get_day_key(now)
+            priceing_obj = obj.prices.filter(
+                day=day_key,
+                start_time__lte=now.time(),
+                end_time__gt=now.time()
+            ).first()
         return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
     
     def to_representation(self, instance):
