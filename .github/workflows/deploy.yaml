@@ -19,3 +19,6 @@ jobs:
             cd /home/ubuntu/projects/khelkud/futsal-be
             git pull
             docker compose -f docker-compose.production.yml up -d --build --force-recreate
+
+
+            
