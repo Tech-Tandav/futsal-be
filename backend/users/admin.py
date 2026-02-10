@@ -39,3 +39,5 @@ class UserAdmin(auth_admin.UserAdmin):
     list_display = ["username", "name", "is_staff", "is_superuser"]
     list_editable = ("is_staff", "is_superuser")
     search_fields = ["name"]
+
+
