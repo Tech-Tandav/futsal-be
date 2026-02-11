@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
-from backend.core.utils import get_day_key
+from backend.core.utils import get_day_key, haversine_formula
     
     
 class FutsalImageSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class FutsalImageSerializer(serializers.ModelSerializer):
 
 class FutsalSerializer(serializers.ModelSerializer):
     images = FutsalImageSerializer(source="futsal_image", many=True, read_only=True)
-    # distance = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
     price_per_hour = serializers.SerializerMethodField()
     class Meta:
         model = Futsal
@@ -36,14 +36,24 @@ class FutsalSerializer(serializers.ModelSerializer):
             "created_at",
             "map_source",
             "price_per_hour",
-            # "distance"
+            "distance"
         ]
-    # def get_distance(self,obj):
-    #     print(self.context.get("request").query_params)
-    #     return 1
+        
+    def get_distance(self,obj):
+        query_params = self.context.get("query_params")
+        user_lat = query_params.get("lat", None),
+        user_log = query_params.get("log", None)
+        futsal = {
+            "lat" : obj.latitude,
+            "log" : obj.longitude
+        }
+        return haversine_formula(user_lat, user_log, futsal)
+    
+    
     def get_price_per_hour(self,obj):
-        date_str = self.context.get("date")
-        time_slot = self.context.get("time_slot")
+        query_params = self.context.get("query_params")
+        date_str = query_params.get("date")
+        time_slot = query_params.get("time_slot")
         if date_str and time_slot:
             dt = datetime.strptime(date_str, "%Y-%m-%d")
             time_slot_obj = TimeSlot.objects.get(id=time_slot)
@@ -53,15 +63,15 @@ class FutsalSerializer(serializers.ModelSerializer):
                 start_time__lte=time_slot_obj.start_time,
                 end_time__gt=time_slot_obj.end_time
             ).first()
+            return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
 
         now = timezone.localtime()
         day_key = get_day_key(now)
         priceing_obj = obj.prices.filter(
             day=day_key,
-            start_time__lte=now.time(),
-            end_time__gt=now.time()
-        ).first()
+        ).order_by("price").first()
         return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
+        
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
