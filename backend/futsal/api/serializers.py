@@ -17,7 +17,7 @@ class FutsalImageSerializer(serializers.ModelSerializer):
 
 class FutsalSerializer(serializers.ModelSerializer):
     images = FutsalImageSerializer(source="futsal_image", many=True, read_only=True)
-    distance = serializers.SerializerMethodField()
+    # distance = serializers.SerializerMethodField()
     price_per_hour = serializers.SerializerMethodField()
     class Meta:
         model = Futsal
@@ -36,19 +36,19 @@ class FutsalSerializer(serializers.ModelSerializer):
             "created_at",
             "map_source",
             "price_per_hour",
-            "distance"
+            # "distance"
         ]
         
-    def get_distance(self,obj):
-        query_params = self.context.get("query_params")
-        if query_params:
-            user_lat = query_params.get("lat", None),
-            user_log = query_params.get("log", None)
-            futsal = {
-                "lat" : obj.latitude,
-                "log" : obj.longitude
-            }
-            return haversine(user_lat, user_log, futsal)
+    # def get_distance(self,obj):
+    #     query_params = self.context.get("query_params")
+    #     if query_params:
+    #         user_lat = query_params.get("lat", None),
+    #         user_log = query_params.get("log", None)
+    #         futsal = {
+    #             "lat" : obj.latitude,
+    #             "log" : obj.longitude
+    #         }
+    #         return haversine(user_lat, user_log, futsal)
     
     
     def get_price_per_hour(self,obj):
