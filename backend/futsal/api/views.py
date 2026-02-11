@@ -34,9 +34,7 @@ class FutsalViewSet(viewsets.ModelViewSet):
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        query_params = self.request.query_params
-        context["date"] = query_params.get("date", None)
-        context["time_slot"] = query_params.get("time_slot", None)
+        context["query_params"] = self.request.query_params
         return context
 
     def get_serializer_class(self):

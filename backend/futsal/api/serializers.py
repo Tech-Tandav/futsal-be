@@ -81,6 +81,7 @@ class FutsalSerializer(serializers.ModelSerializer):
             if representation.get(field) == "":
                 representation[field] = None
         return representation
+    
 
 class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,7 +101,6 @@ class FutsalCreateUpdateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["owner"] = self.context["request"].user
         return super().create(validated_data)
-
 
 
 class TimeSlotSerializer(serializers.ModelSerializer):
@@ -129,7 +129,6 @@ class TimeSlotSerializer(serializers.ModelSerializer):
         return []
 
 
-
 class BookingReadSerializer(serializers.ModelSerializer):
     futsal_name = serializers.CharField(source="time_slot.futsal.name", read_only=True)
     start_time = serializers.TimeField(source="time_slot.start_time", read_only=True)
@@ -149,7 +148,6 @@ class BookingReadSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
         ]
-
 
 
 class BookingCreateSerializer(serializers.ModelSerializer):
