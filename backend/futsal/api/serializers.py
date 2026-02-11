@@ -44,7 +44,7 @@ class FutsalSerializer(serializers.ModelSerializer):
     def get_price_per_hour(self,obj):
         date_str = self.context.get("date")
         time_slot = self.context.get("time_slot")
-        if date_str:
+        if date_str and time_slot:
             dt = datetime.strptime(date_str, "%Y-%m-%d")
             time_slot_obj = TimeSlot.objects.get(id=time_slot)
             day_key = get_day_key(dt)
@@ -53,14 +53,14 @@ class FutsalSerializer(serializers.ModelSerializer):
                 start_time__lte=time_slot_obj.start_time,
                 end_time__gt=time_slot_obj.end_time
             ).first()
-        else:
-            now = timezone.localtime()
-            day_key = get_day_key(now)
-            priceing_obj = obj.prices.filter(
-                day=day_key,
-                start_time__lte=now.time(),
-                end_time__gt=now.time()
-            ).first()
+
+        now = timezone.localtime()
+        day_key = get_day_key(now)
+        priceing_obj = obj.prices.filter(
+            day=day_key,
+            start_time__lte=now.time(),
+            end_time__gt=now.time()
+        ).first()
         return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
     
     def to_representation(self, instance):
