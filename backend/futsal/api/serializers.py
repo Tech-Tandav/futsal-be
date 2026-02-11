@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from backend.futsal.models import Futsal, FutsalImage, TimeSlot, Booking
-from backend.core.utils import get_day_key, haversine_formula
+from backend.core.utils import get_day_key, haversine
     
     
 class FutsalImageSerializer(serializers.ModelSerializer):
@@ -47,7 +47,7 @@ class FutsalSerializer(serializers.ModelSerializer):
             "lat" : obj.latitude,
             "log" : obj.longitude
         }
-        return haversine_formula(user_lat, user_log, futsal)
+        return haversine(user_lat, user_log, futsal)
     
     
     def get_price_per_hour(self,obj):
