@@ -70,7 +70,7 @@ class FutsalSerializer(serializers.ModelSerializer):
         day_key = get_day_key(now)
         priceing_obj = obj.prices.filter(
             day=day_key,
-        ).order_by("price").first()
+        ).order_by("price_per_hour").first()
         return model_to_dict(priceing_obj)["price_per_hour"] if priceing_obj else None
             
     
