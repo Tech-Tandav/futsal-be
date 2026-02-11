@@ -41,13 +41,14 @@ class FutsalSerializer(serializers.ModelSerializer):
         
     def get_distance(self,obj):
         query_params = self.context.get("query_params")
-        user_lat = query_params.get("lat", None),
-        user_log = query_params.get("log", None)
-        futsal = {
-            "lat" : obj.latitude,
-            "log" : obj.longitude
-        }
-        return haversine(user_lat, user_log, futsal)
+        if query_params:
+            user_lat = query_params.get("lat", None),
+            user_log = query_params.get("log", None)
+            futsal = {
+                "lat" : obj.latitude,
+                "log" : obj.longitude
+            }
+            return haversine(user_lat, user_log, futsal)
     
     
     def get_price_per_hour(self,obj):
