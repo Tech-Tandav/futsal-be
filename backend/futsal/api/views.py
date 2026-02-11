@@ -23,7 +23,7 @@ class FutsalViewSet(viewsets.ModelViewSet):
     filterset_class = FutsalFilter
     search_fields = ["name", "city"]
     ordering_fields = ["price_per_hour", "created_at"]
-    ordering = ["-created_at"]
+    ordering = ["name"]
     permission_classes = [AllowAny]
     
     def get_queryset(self):
